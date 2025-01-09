@@ -14,7 +14,7 @@ def main():
     # Training configuration
     config = TrainingConfig(
         epochs=50,
-        batch_size=64,
+        batch_size=16,
         use_amp=True,
         max_grad_norm=1.0,
         early_stopping_patience=10,
@@ -60,16 +60,15 @@ def main():
         in_channels=3,
         num_frames=16,
         num_classes=27,
-        embed_dim=512,
+        embed_dim=384,
         depth=8,
-        num_heads=8,
+        num_heads=6,
         mlp_ratio=4.,
         qkv_bias=True,
         drop_rate=0.1,
-        attn_drop_rate=0.1,
-        time_first=True
+        attn_drop_rate=0.1
     )
-    model.set_gradient_checkpointing(True)
+    print(f"Model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")
 
     # Setup loss, optimizer and scheduler
     criterion = nn.CrossEntropyLoss()

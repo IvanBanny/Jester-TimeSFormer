@@ -117,7 +117,7 @@ class DistributedTrainer:
                 self.train_dataset,
                 batch_size=self.config.batch_size,
                 sampler=train_sampler,
-                num_workers=8,
+                num_workers=24,
                 pin_memory=True,
                 persistent_workers=True,
                 prefetch_factor=3
@@ -135,7 +135,7 @@ class DistributedTrainer:
                     self.val_dataset,
                     batch_size=self.config.batch_size,
                     sampler=val_sampler,
-                    num_workers=2,
+                    num_workers=12,
                     pin_memory=True
                 )
 
