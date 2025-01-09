@@ -14,7 +14,7 @@ def main():
     # Training configuration
     config = TrainingConfig(
         epochs=50,
-        batch_size=32,
+        batch_size=64,
         use_amp=True,
         max_grad_norm=1.0,
         early_stopping_patience=10,
@@ -42,7 +42,7 @@ def main():
         num_frames=16,
         frame_size=(224, 224),
         frame_stride=2,
-        validation_subset=0.2
+        validation_subset=0.1
     )
 
     # val_dataset_full = JesterDataset(
@@ -75,9 +75,10 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.AdamW(
         model.parameters(),
-        lr=1e-3,
+        lr=1e-4,
         weight_decay=0.05,
-        eps=1e-8
+        eps=1e-8,
+        foreach=True
     )
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer,

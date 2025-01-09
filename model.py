@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 from torch.nn import LayerNorm
 from torch.utils.checkpoint import checkpoint
-from torch.amp import autocast
 from einops import rearrange, repeat
 
 
@@ -51,30 +50,28 @@ class MultiheadAttention(nn.Module):
         self.proj_drop = nn.Dropout(proj_drop)
 
     def forward_temporal(self, x):
-        with autocast("cuda"):
-            B, T, N, C = x.shape
-            qkv = self.qkv_temporal(x).reshape(B, T, N, 3, self.num_heads, self.head_dim).permute(3, 0, 4, 1, 2, 5)
-            q, k, v = qkv[0], qkv[1], qkv[2]
+        B, T, N, C = x.shape
+        qkv = self.qkv_temporal(x).reshape(B, T, N, 3, self.num_heads, self.head_dim).permute(3, 0, 4, 1, 2, 5)
+        q, k, v = qkv[0], qkv[1], qkv[2]
 
-            attn = (q @ k.transpose(-2, -1)) * self.scale
-            attn = attn.softmax(dim=-1)
-            attn = self.attn_drop(attn)
+        attn = (q @ k.transpose(-2, -1)) * self.scale
+        attn = attn.softmax(dim=-1)
+        attn = self.attn_drop(attn)
 
-            x = (attn @ v).transpose(1, 2).reshape(B, T, N, C)
-            return x
+        x = (attn @ v).transpose(1, 2).reshape(B, T, N, C)
+        return x
 
     def forward_spatial(self, x):
-        with autocast("cuda"):
-            B, T, N, C = x.shape
-            qkv = self.qkv_spatial(x).reshape(B, T, N, 3, self.num_heads, self.head_dim).permute(3, 0, 1, 4, 2, 5)
-            q, k, v = qkv[0], qkv[1], qkv[2]
+        B, T, N, C = x.shape
+        qkv = self.qkv_spatial(x).reshape(B, T, N, 3, self.num_heads, self.head_dim).permute(3, 0, 1, 4, 2, 5)
+        q, k, v = qkv[0], qkv[1], qkv[2]
 
-            attn = (q @ k.transpose(-2, -1)) * self.scale
-            attn = attn.softmax(dim=-1)
-            attn = self.attn_drop(attn)
+        attn = (q @ k.transpose(-2, -1)) * self.scale
+        attn = attn.softmax(dim=-1)
+        attn = self.attn_drop(attn)
 
-            x = (attn @ v).transpose(2, 3).reshape(B, T, N, C)
-            return x
+        x = (attn @ v).transpose(2, 3).reshape(B, T, N, C)
+        return x
 
     def forward(self, x, time_first=True):
         if time_first:
