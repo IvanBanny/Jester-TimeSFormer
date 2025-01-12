@@ -1,5 +1,5 @@
-# Jester-TimeSFormer
-Implementation of the TimeSFormer architecture for hand gesture recognition using the Jester dataset, built with PyTorch.
+# Jester-TimeSformer
+Implementation of the TimeSformer architecture for hand gesture recognition using the Jester dataset, built with PyTorch.
 
 **Key terms: distributed training, DDP, divided attention (temporal and spatial), patch embeddings, multi-head self-attention, gradient checkpointing, mixed precision training, learning rate scheduling, early stopping.**
 
@@ -9,7 +9,7 @@ Training utilized **distributed data parallel (DDP)** across multiple GPUs with 
 **20BN-Jester Dataset:** A large-scale video dataset for hand gesture recognition, containing 27 classes of common gestures. Training is performed on 16-frame sequences, with frames resized to 224x224 pixels.
 
 ## Model:
-The implementation follows the TimeSFormer (Time-Space Transformer) architecture with:
+The implementation follows the TimeSformer (Time-Space Transformer) architecture with:
 - **Patch embedding** layer that divides each frame into 16x16 patches
 - **Separate temporal and spatial attention** mechanisms in each transformer block
 - Architecture specifications:
